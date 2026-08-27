@@ -1,35 +1,43 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 
 function useFetch<T>(url: string) {
-    const [data , setData] = useState<T | null>(null)
-    const [isLoading , setIsLoading] = useState(true)
-    const [error , setError] = useState("")
+    const [data, setData] = useState<T | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         async function fetchData() {
-            try{
-            const response = await fetch(url)
+            try {                
+                const token =  localStorage.getItem("token");
 
-            if(!response.ok) {
-                throw new Error("Error occured while fetching data")
-            }
-            const data = await response.json()
-            setData(data)
-            }catch(error) {
-                setError("An Error occured")
-            }finally {
-                setIsLoading(false)
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error occurred while fetching data");
+                }
+                const result = await response.json();
+                setData(result);
+            } catch (err) {
+                setError("An Error occurred");
+            } finally {
+                setIsLoading(false);
             }
         }
-        fetchData()
 
-    },[url])
+        fetchData();
+    }, [url]);
 
     return {
         data,
         isLoading,
-        error
-    }
+        error,
+    };
 }
 
-export default useFetch
+export default useFetch;

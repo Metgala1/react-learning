@@ -12,6 +12,7 @@ type AuthContextType = {
     login: (token: string, user: User) => void;
     logout: () => void;
     isLoading: boolean;
+    token: string | undefined
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [token , setToken] = useState<string | undefined>('')
 
     // Check for existing token/user on app load (Fixes page refresh logout)
     useEffect(() => {
@@ -34,6 +36,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
                 localStorage.removeItem('user');
             }
         }
+        setToken(token ?? undefined)
         setIsLoading(false);
     }, []);
 
@@ -50,7 +53,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+        <AuthContext.Provider value={{ user, login, logout, isLoading , token }}>
             {children}
         </AuthContext.Provider>
     );

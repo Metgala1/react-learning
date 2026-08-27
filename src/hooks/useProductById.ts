@@ -14,7 +14,14 @@ function useProductById(id: number) {
     useEffect(() => {
        async function getProduct(id: number) {
             try{
-                const response = await fetch(`http://localhost:3000/products/${id}`)
+                const token = localStorage.getItem("token")
+                const response = await fetch(`http://localhost:3000/products/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                })
                 if(!response.ok) {
                     throw new Error("Failed to fatch product")
                 }

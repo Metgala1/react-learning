@@ -1,6 +1,15 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../context/AuthContext';
+
+import type { User } from '../context/AuthContext';
+
+interface LoginResponse {
+    token: string;
+    user: User;
+    message?: string;
+}
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -8,10 +17,10 @@ function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false); // Added loading state
     
-    const { login } = useAuth();
+    const { login  } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
         setError('');
         setLoading(true);
@@ -23,7 +32,7 @@ function Login() {
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await response.json();
+            const data: LoginResponse = await response.json();
 
             if (!response.ok) {
                 throw new Error(data.message || 'Login failed. Please check your credentials.');
@@ -35,7 +44,7 @@ function Login() {
             // Redirect to products page
             navigate('/products'); 
 
-        } catch (err) {
+        } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false); // Always reset loading state
