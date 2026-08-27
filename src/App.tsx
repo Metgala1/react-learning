@@ -5,6 +5,7 @@ import Products from "./pages/Products";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import ProductDetails from "./components/ProductDetails";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
 
@@ -15,7 +16,11 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/products" element={<Products />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/products/:id" element={<ProductDetails />} />
+      <Route path="/products/:id" element={
+        <ProtectedRoute>
+        <ProductDetails />
+        </ProtectedRoute>
+        } />
     </Routes>
     </BrowserRouter>
   )

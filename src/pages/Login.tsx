@@ -1,16 +1,20 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false); // Added loading state
     
-    const navigate = useNavigate(); // 2. Initialize the hook
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
             const response = await fetch('http://localhost:3000/auth/login', {
@@ -19,21 +23,22 @@ function Login() {
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error('Login failed. Please check your credentials.');
+                throw new Error(data.message || 'Login failed. Please check your credentials.');
             }
 
-            const data = await response.json();
-            console.log('Login successful:', data);
+            // Pass both token and user to the context login function
+            login(data.token, data.user);
 
-            // 3. Save token if needed (optional)
-            localStorage.setItem('token', data.token);
-
-            // 4. Redirect to the dashboard or home page
+            // Redirect to products page
             navigate('/products'); 
 
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false); // Always reset loading state
         }
     };
 
@@ -60,7 +65,9 @@ function Login() {
                         required 
                     />
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Submit'}
+                </button>
             </form>
         </div>
     );

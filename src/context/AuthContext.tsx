@@ -1,53 +1,68 @@
-import { createContext , useContext , useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-type User = {
-    id: number
-    name: string
-    email: string
-}
+export type User = {
+    userId: number; // Changed from 'id' to match your backend code
+    name: string;
+    email: string;
+    roles: string[];
+};
 
 type AuthContextType = {
-    user: User | null
-    login: (user: User) => void
-    logout: () => void
-}
+    user: User | null;
+    login: (token: string, user: User) => void;
+    logout: () => void;
+    isLoading: boolean;
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function AuthProvider({children}: {children: React.ReactNode}) {
-   const [user, setUser] = useState<User | null>(null)
+function AuthProvider({ children }: { children: React.ReactNode }) {
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    function login(user: User) {
-        setUser(user)
+    // Check for existing token/user on app load (Fixes page refresh logout)
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+
+        if (token && storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                // If JSON parsing fails, clear bad data
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            }
+        }
+        setIsLoading(false);
+    }, []);
+
+    function login(token: string, userData: User) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
     }
 
     function logout() {
-        setUser(null)
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
     }
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                login,
-                logout
-            }}
-        >
+        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 }
 
 function useAuth() {
-    const context = useContext(AuthContext)
-
-    if(!context) {
-        throw new Error("useAth must be used within the AuthProcider")
+    const context = useContext(AuthContext);
+    if (!context) {
+        // Fixed typos here
+        throw new Error("useAuth must be used within an AuthProvider");
     }
-    return context
+    return context;
 }
 
-export {
-    AuthProvider,
-    useAuth
-}
+export { AuthProvider, useAuth };
