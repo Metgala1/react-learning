@@ -53,6 +53,7 @@ function Products() {
 
             <button onClick={increase}></button>
             <button onClick={refetch}>Refetch</button>
+            <Link to={"/products/create"}>Creat a product</Link>
            
         </div>
     );

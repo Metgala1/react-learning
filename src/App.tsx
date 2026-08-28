@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProductDetails from "./pages/ProductDetails";
+import CreateProductPage from "./pages/CreateProductPage";
 
 function App() {
 
@@ -18,7 +19,9 @@ function App() {
         <ProtectedRoute>
         <Products />
         </ProtectedRoute>
-        } />
+        } 
+        />
+      <Route path="/products/create" element={<CreateProductPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/products/:id" element={
         <ProtectedRoute>
@@ -26,6 +29,7 @@ function App() {
         </ProtectedRoute>
         } />
     </Routes>
+
     </BrowserRouter>
   )
 }

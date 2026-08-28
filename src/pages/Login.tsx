@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +16,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false); // Added loading state
+
     
     const { login  } = useAuth();
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ function Login() {
         e.preventDefault();
         setError('');
         setLoading(true);
+        
 
         try {
             const response = await fetch('http://localhost:3000/auth/login', {
@@ -74,7 +76,7 @@ function Login() {
                         required 
                     />
                 </div>
-                <button type="submit" disabled={loading}>
+                <button  type="submit" disabled={loading}>
                     {loading ? 'Logging in...' : 'Submit'}
                 </button>
             </form>

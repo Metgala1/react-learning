@@ -9,3 +9,5 @@ function useLocalStorage() {
         token
     }
 }
+
+export default useLocalStorage

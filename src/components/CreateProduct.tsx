@@ -19,6 +19,16 @@ function CreateProduct() {
         setIsLoading(true);
         setMessage("");
 
+        if (!formData.name.trim()) {
+            setMessage("Product name is required")
+            return
+            }
+
+            if (!formData.price || Number(formData.price) <= 0) {
+            setMessage("Price must be greater than 0")
+            return
+            }
+
         try {
             const data = await createProducService(formData.name, formData.price);
 
@@ -66,7 +76,6 @@ function CreateProduct() {
                 <input
                     id="price"
                     type="number"
-                    step="0.01"
                     value={formData.price}
                     onChange={(e) =>
                         setFormData((prev) => ({
