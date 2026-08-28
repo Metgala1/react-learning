@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import useProducts from "../hooks/useProducts";
 import useFetch from "../hooks/useFetch";
 
 

@@ -1,7 +1,6 @@
-
 import { useParams } from "react-router-dom"
 import useProductById from "../hooks/useProductById"
-import ProductCard from "./ProductCard"
+import ProductCard from "../components/ProductCard"
 
 function ProductDetails() {
     const { id } = useParams()
