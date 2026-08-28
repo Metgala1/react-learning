@@ -13,7 +13,6 @@ function useProducts() {
     const [error, setError] = useState("");
     const {token} = useAuth()
 
-    useEffect(() => {
         async function getProducts() {
             try {
                 console.log(token)
@@ -42,11 +41,13 @@ function useProducts() {
                 setIsLoading(false);
             }
         }
+        
+        useEffect(() => {
+            getProducts()
+        })
 
-        getProducts();
-    }, []);
 
-    return { products, isLoading, error };
+    return { products, isLoading, error , refetch: getProducts };
 }
 
 export default useProducts;

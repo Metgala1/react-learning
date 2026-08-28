@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 type ProductCardProps = {
     id: number
     name: string
@@ -5,9 +7,11 @@ type ProductCardProps = {
     
 }
 
-
-
+//use memo says do not rerender a component over though the parent can rerender
+//except the value or props in that component changes, get for products
+const ProductCard = memo(
 function ProductCard({name, price , id }: ProductCardProps) {
+    console.log("Product card render")
 
     return (
         <div key={id}>
@@ -16,6 +20,6 @@ function ProductCard({name, price , id }: ProductCardProps) {
         </div>
     )
 
-}
+})
 
 export default ProductCard
